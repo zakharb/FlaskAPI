@@ -29,7 +29,7 @@ Database can be switch from MongoDB to Postgres or other
 
 Also the API include 
 - authentication mechanism using JWT tokens  
-- pagination to limit the amount of data returned  
+- pagination and filtering to limit the amount of data returned  
 - use caching mechanism to improve performance for frequently accessed data  
 - rate limiting to prevent abuse of the API
 
