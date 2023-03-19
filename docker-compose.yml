@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    logging:
+        driver: none
+
+  customer_service:
+    build: ./customer-service
+    command: gunicorn app.main:app --bind 0.0.0.0:8000 --reload
+    volumes:
+      - ./customer-service/:/app/
+    ports:
+      - 8001:8000
+    environment:
+      - DATABASE_URI=mongodb://root:root@mongo:27017/
+    depends_on:
+       - customer_db
+  
+  customer_db:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    logging:
+        driver: none
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - customer_service
